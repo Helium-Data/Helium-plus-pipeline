@@ -130,7 +130,8 @@ def unzip_dumps():
                 lowercase_output_file = output_file.lower()
         
                 # rename the file to lowercase
-                os.rename(output_file, lowercase_output_file)
+                os.rename(output_file, output_file)
+                # os.rename(output_file, lowercase_output_file)
 
 
 
@@ -138,7 +139,7 @@ def unzip_dumps():
 if __name__ == "__main__":
     delete_all_files_in_folders('dumps-gz','dumps-sql')  # Replace with your actual folder name
     heliumplus_dumps_download()
-    # unzip_dumps()
+    unzip_dumps()
 
 
 # Close SFTP connection
