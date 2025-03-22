@@ -50,7 +50,9 @@ jobs:
           sleep 5
 
       - name: Run Pipeline Script
-        run: python generate_report.py
+        run: |
+          mkdir dumps-gz dumps-sql
+          python download_heliumplus_dumps.py
 
       - name: Send Slack Notification
         uses: act10ns/slack@v2
