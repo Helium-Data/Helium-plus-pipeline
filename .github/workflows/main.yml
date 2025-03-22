@@ -52,13 +52,12 @@ jobs:
       - name: Run Pipeline Script
         run: |
           mkdir dumps-gz dumps-sql
-          ls
-          python download_heliumplus_dumps.py
+          python download_heliumplus_dumps.py && python import_heliumplus.py && python heliumplus_sync_to_bigquery_merge.py
 
-      - name: test
-        run: |
-          cd dumps-sql
-          ls
+      # - name: test
+      #   run: |
+      #     cd dumps-sql
+      #     ls
 
       - name: Send Slack Notification
         uses: act10ns/slack@v2
