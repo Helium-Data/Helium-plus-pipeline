@@ -52,6 +52,7 @@ jobs:
       - name: Run Pipeline Script
         run: |
           mkdir dumps-gz dumps-sql
+          ls
           python download_heliumplus_dumps.py
 
       - name: Send Slack Notification
