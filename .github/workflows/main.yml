@@ -57,7 +57,7 @@ jobs:
 
       - name: test
         run: |
-          cd dumps-gz
+          cd dumps-sql
           ls
 
       - name: Send Slack Notification
