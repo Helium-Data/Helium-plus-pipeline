@@ -138,7 +138,7 @@ def unzip_dumps():
 if __name__ == "__main__":
     delete_all_files_in_folders('dumps-gz','dumps-sql')  # Replace with your actual folder name
     heliumplus_dumps_download()
-    unzip_dumps()
+    # unzip_dumps()
 
 
 # Close SFTP connection
