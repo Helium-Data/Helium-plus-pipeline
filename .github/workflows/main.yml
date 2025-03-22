@@ -55,6 +55,11 @@ jobs:
           ls
           python download_heliumplus_dumps.py
 
+      - name: test
+        run: |
+          cd dumps-gz
+          ls
+
       - name: Send Slack Notification
         uses: act10ns/slack@v2
         with:
