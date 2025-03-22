@@ -1,0 +1,61 @@
+name: Generate Report
+
+env:
+  SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+  GCP_CREDENTIALS_BASE64: ${{secrets.GCP_CREDENTIALS}}
+  CONFIG_BASE64: ${{secrets.CONFIG_FILE}}
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+on:
+  schedule:
+    - cron: '0 12 * * 1'  # Runs at 12 noon
+  workflow_dispatch:
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+    
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install Dependencies
+        run: |
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Decode Google Credentials
+        run: echo "$GCP_CREDENTIALS_BASE64" | base64 --decode | jq > heliumhealth-1ce77f433fc7.json
+
+      - name: Decode Google Credentials
+        run: echo "$CONFIG_BASE64" | base64 --decode > config_heliumplus.py
+
+      - name: Add private SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Add host key
+        run: |
+          ssh-keyscan bastion.onemedtest.com >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Start SSH Tunnel
+        run: |
+          ssh -fN -L 6667:heliumplus-db-warehouse.cmyqyq1ypwcc.eu-west-1.rds.amazonaws.com:3306 ubuntu@bastion.onemedtest.com &
+          sleep 5
+
+      - name: Run Pipeline Script
+        run: python generate_report.py
+
+      - name: Send Slack Notification
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#helium-data-engineering'
+        if: always()
