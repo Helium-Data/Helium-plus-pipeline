@@ -1,0 +1,13 @@
+google-cloud-bigquery
+cryptography
+db-dtypes
+psycopg2-binary
+Cython
+pyarrow
+python-dotenv
+requests
+SQLAlchemy
+numpy
+pandas
+paramiko
+mysql-connector-python
