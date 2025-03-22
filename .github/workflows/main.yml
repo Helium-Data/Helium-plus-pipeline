@@ -1,4 +1,4 @@
-name: Generate Report
+name: Sync Heliumplus data
 
 env:
   SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
