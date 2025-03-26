@@ -54,18 +54,22 @@ jobs:
         run: |
           sudo /etc/init.d/mysql start
           sudo mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_ph;' --user=root --password=root
+          sudo mysql -e 'CREATE DATABASE src_heliumplus_novamedic_clinic;' --user=root --password=root
+          sudo mysql -e 'CREATE DATABASE src_heliumplus_euracare_lagos;' --user=root --password=root
+          sudo mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_borokiri;' --user=root --password=root
+          sudo mysql -e 'CREATE DATABASE src_heliumplus_coastalspecialist;' --user=root --password=root
+          sudo mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_obigbo;' --user=root --password=root
+
+      - name: Run Pipeline Script
+        run: |
+          mkdir dumps-gz dumps-sql
+          python download_heliumplus_dumps.py && python import_heliumplus.py && python heliumplus_sync_to_bigquery_merge.py
 
 
-      # - name: Run Pipeline Script
-      #   run: |
-      #     mkdir dumps-gz dumps-sql
-      #     python download_heliumplus_dumps.py && python import_heliumplus.py && python heliumplus_sync_to_bigquery_merge.py
-
-
-      # - name: Send Slack Notification
-      #   uses: act10ns/slack@v2
-      #   with:
-      #     status: ${{ job.status }}
-      #     steps: ${{ toJson(steps) }}
-      #     channel: '#helium-data-engineering'
-      #   if: always()
+      - name: Send Slack Notification
+        uses: act10ns/slack@v2
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#helium-data-engineering'
+        if: always()
