@@ -85,7 +85,7 @@ def main():
     host = 'localhost'
     user = config_heliumplus.mysql_username
     password = config_heliumplus.mysql_password
-    port = 6667  # Specify your MySQL server port
+    port = config_heliumplus.mysql_port  # Specify your MySQL server port
 
     # create list of database to import
     database_list_to_import(database_csv = 'databasename.csv', output_csv = 'import_database.csv')
