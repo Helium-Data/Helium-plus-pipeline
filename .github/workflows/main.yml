@@ -53,12 +53,12 @@ jobs:
       - name: Set up MySQL
         run: |
           sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_ph;' -u root -p root
-          mysql -e 'CREATE DATABASE src_heliumplus_novamedic_clinic;' -u root -p root
-          mysql -e 'CREATE DATABASE src_heliumplus_euracare_lagos;' -u root -p root
-          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_borokiri;' -u root -p root
-          mysql -e 'CREATE DATABASE src_heliumplus_coastalspecialist;' -u root -p root
-          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_obigbo;' -u root -p root
+          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_ph;' -u root
+          mysql -e 'CREATE DATABASE src_heliumplus_novamedic_clinic;' -u root
+          mysql -e 'CREATE DATABASE src_heliumplus_euracare_lagos;' -u root
+          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_borokiri;' -u root
+          mysql -e 'CREATE DATABASE src_heliumplus_coastalspecialist;' -u root
+          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_obigbo;' -u root
 
       - name: Run Pipeline Script
         run: |
