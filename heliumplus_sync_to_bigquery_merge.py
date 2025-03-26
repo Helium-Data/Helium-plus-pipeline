@@ -25,7 +25,7 @@ def extract_data_from_mysql(database_name, table_name):
         'user': config_heliumplus.mysql_username,
         'password': config_heliumplus.mysql_password,
         'host': 'localhost',
-        'port': 6667,
+        'port': config_heliumplus.mysql_port,
         'database': f'{database_name}',
     }
 
