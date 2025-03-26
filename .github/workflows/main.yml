@@ -5,6 +5,7 @@ env:
   GCP_CREDENTIALS_BASE64: ${{secrets.GCP_CREDENTIALS}}
   CONFIG_BASE64: ${{secrets.CONFIG_FILE}}
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  
 
 on:
   schedule:
@@ -33,31 +34,37 @@ jobs:
       - name: Decode Google Credentials
         run: echo "$CONFIG_BASE64" | base64 --decode > config_heliumplus.py
 
-      - name: Add private SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      # - name: Add private SSH key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
 
-      - name: Add host key
-        run: |
-          ssh-keyscan bastion.onemedtest.com >> ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
+      # - name: Add host key
+      #   run: |
+      #     ssh-keyscan bastion.onemedtest.com >> ~/.ssh/known_hosts
+      #     chmod 644 ~/.ssh/known_hosts
 
-      - name: Start SSH Tunnel
+      # - name: Start SSH Tunnel
+      #   run: |
+      #     ssh -fN -L 6667:heliumplus-db-warehouse.cmyqyq1ypwcc.eu-west-1.rds.amazonaws.com:3306 ubuntu@bastion.onemedtest.com &
+      #     sleep 5
+
+      - name: Set up MySQL
         run: |
-          ssh -fN -L 6667:heliumplus-db-warehouse.cmyqyq1ypwcc.eu-west-1.rds.amazonaws.com:3306 ubuntu@bastion.onemedtest.com &
-          sleep 5
+          sudo /etc/init.d/mysql start
+          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_ph;' -u root -p root
+          mysql -e 'CREATE DATABASE src_heliumplus_novamedic_clinic;' -u root -p root
+          mysql -e 'CREATE DATABASE src_heliumplus_euracare_lagos;' -u root -p root
+          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_borokiri;' -u root -p root
+          mysql -e 'CREATE DATABASE src_heliumplus_coastalspecialist;' -u root -p root
+          mysql -e 'CREATE DATABASE src_heliumplus_imagediagnostics_obigbo;' -u root -p root
 
       - name: Run Pipeline Script
         run: |
           mkdir dumps-gz dumps-sql
           python download_heliumplus_dumps.py && python import_heliumplus.py && python heliumplus_sync_to_bigquery_merge.py
 
-      # - name: test
-      #   run: |
-      #     cd dumps-sql
-      #     ls
 
       - name: Send Slack Notification
         uses: act10ns/slack@v2
